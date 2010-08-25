@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +17,20 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
     private InetAddress ipDiri = null;
     private final Thread pencariServer = new Thread(() -> {
         if (ipDiri == null) return;
-        JukirServer jukir;
+        JukirServer jukir = null;
         String hostName = ipDiri.getHostName();
         int pemisahId = hostName.lastIndexOf(".");
-        short ukuranId = (short) (hostName.length() - pemisahId - 1);
+        short ukuranId = (short)hostName.length();
         String asal = hostName.substring(0, pemisahId + 1);
         int diri = Integer.parseInt(hostName.substring(pemisahId + 1, ukuranId));
 
-        for (int i = 0; i < 255; i++) {
+        for (int i = 1; i < 255; i++) {
             if (diri == i) continue;
             try {
                 jukir = new JukirServer(InetAddress.getByName(asal + i));
                 if (jukir.isServer()) deretPenerima.add(jukir);
+            } catch (ConnectException e) {
+                System.err.println("Tidak bisa tersambung " + jukir.host);
             } catch (IOException e) {
                 e.printStackTrace();
             }
