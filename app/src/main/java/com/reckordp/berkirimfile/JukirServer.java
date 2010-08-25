@@ -17,7 +17,7 @@ public class JukirServer {
         boolean portNormal = false;
         Socket koneksi;
         RuangTunggu.PenghantarServer server;
-        if (ipAddr.isReachable(1000)) {
+        if (ipAddr.isReachable(8)) {
             koneksi = new Socket(ipAddr, RuangTunggu.PenghantarServer.SOCKET_PORT_SERVER);
             server = new RuangTunggu.PenghantarServer(koneksi);
             portNormal = server.ujiPort();
