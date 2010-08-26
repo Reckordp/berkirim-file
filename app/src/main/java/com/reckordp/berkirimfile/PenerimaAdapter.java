@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
             try {
                 jukir = new JukirServer(InetAddress.getByName(asal + i));
                 if (jukir.isServer()) deretPenerima.add(jukir);
-            } catch (ConnectException e) {
+            } catch (ConnectException | SocketTimeoutException e) {
                 System.err.println("Tidak bisa tersambung " + jukir.host);
             } catch (IOException e) {
                 e.printStackTrace();
