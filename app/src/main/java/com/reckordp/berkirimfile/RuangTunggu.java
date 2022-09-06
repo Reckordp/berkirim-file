@@ -154,6 +154,11 @@ public class RuangTunggu extends AppCompatActivity {
             tulis = penghantar.getOutputStream();
         }
 
+        public boolean ujiPort() throws IOException {
+            kirimDalam(buatFlag(0x90, 0, null), 2);
+            return err == 0;
+        }
+
         public void panggilanPertama(String nama) throws IOException {
             byte[] byteNama = nama.getBytes(StandardCharsets.UTF_8);
             byte[] flag = buatFlag(0x91, nama.length(), byteNama);
