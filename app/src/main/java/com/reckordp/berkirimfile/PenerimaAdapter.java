@@ -23,9 +23,13 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
         if (ipDiri == null) return;
         JukirServer jukir;
         String hostName = ipDiri.getHostName();
-        String asal = hostName.substring(0, hostName.lastIndexOf(".") + 1);
+        int pemisahId = hostName.lastIndexOf(".");
+        short ukuranId = (short) (hostName.length() - pemisahId - 1);
+        String asal = hostName.substring(0, pemisahId + 1);
+        int diri = Integer.parseInt(hostName.substring(pemisahId + 1, ukuranId));
 
         for (int i = 0; i < 255; i++) {
+            if (diri == i) continue;
             try {
                 jukir = new JukirServer(InetAddress.getByName(asal + i));
                 if (jukir.isServer()) deretPenerima.add(jukir);
