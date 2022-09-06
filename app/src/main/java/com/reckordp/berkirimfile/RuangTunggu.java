@@ -134,7 +134,7 @@ public class RuangTunggu extends AppCompatActivity {
         });
     }
 
-    class PenghantarServer {
+    static class PenghantarServer {
         Socket penghantar;
         InputStream baca;
         OutputStream tulis;
