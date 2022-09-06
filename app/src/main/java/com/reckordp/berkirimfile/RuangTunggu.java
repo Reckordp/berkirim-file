@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -135,16 +136,22 @@ public class RuangTunggu extends AppCompatActivity {
     }
 
     static class PenghantarServer {
+        static int SOCKET_PORT_SERVER = 7777;
+
         Socket penghantar;
         InputStream baca;
         OutputStream tulis;
         int err = 0;
 
         public PenghantarServer(String nama, String tujuan) throws IOException {
-            penghantar = new Socket(tujuan, 7777);
+            this(new Socket(tujuan, SOCKET_PORT_SERVER));
+            panggilanPertama(nama);
+        }
+
+        public PenghantarServer(Socket hantar) throws IOException {
+            penghantar = hantar;
             baca = penghantar.getInputStream();
             tulis = penghantar.getOutputStream();
-            panggilanPertama(nama);
         }
 
         public void panggilanPertama(String nama) throws IOException {
