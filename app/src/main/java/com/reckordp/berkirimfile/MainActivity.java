@@ -5,17 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.view.View;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +32,18 @@ public class MainActivity extends AppCompatActivity {
             asal[i] = guling[asal.length - i - 1];
         }
         try {
-            adapter.setOnEmptyListener(() -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Info");
-                builder.setMessage("Server tidak ditemukan");
-                builder.setPositiveButton(android.R.string.ok, (d,w) -> {});
-                builder.show();
-            });
+            adapter.setOnEmptyListener(this::noIpAddress);
             adapter.taruhIp(InetAddress.getByAddress(asal));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    void noIpAddress() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Info");
+        builder.setMessage("Server tidak ditemukan");
+        builder.setPositiveButton(android.R.string.ok, (d,w) -> {});
+        builder.show();
     }
 }
