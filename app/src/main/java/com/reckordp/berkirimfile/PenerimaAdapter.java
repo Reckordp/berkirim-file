@@ -1,5 +1,7 @@
 package com.reckordp.berkirimfile;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,6 +19,7 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
     private List<JukirServer> deretPenerima;
     private InetAddress ipDiri = null;
     private OnEmptyListener onEmpty = null;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Thread pencariServer = new Thread(() -> {
         if (ipDiri == null) return;
         JukirServer jukir = null;
@@ -44,7 +47,7 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
                 notifyItemRangeInserted(1, deretPenerima.size() - 1);
             }
         } else if (onEmpty != null) {
-            onEmpty.onEmpty();
+            mainHandler.post(() -> onEmpty.onEmpty());
         }
     });
 
