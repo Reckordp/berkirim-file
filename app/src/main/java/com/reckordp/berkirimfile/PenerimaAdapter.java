@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
     private List<JukirServer> deretPenerima;
     private InetAddress ipDiri = null;
+    private OnEmptyListener onEmpty = null;
     private final Thread pencariServer = new Thread(() -> {
         if (ipDiri == null) return;
         JukirServer jukir = null;
@@ -42,12 +44,22 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
             if (deretPenerima.size() > 1) {
                 notifyItemRangeInserted(1, deretPenerima.size() - 1);
             }
+        } else if (onEmpty != null) {
+            onEmpty.onEmpty();
         }
     });
+
+    public interface OnEmptyListener {
+        void onEmpty();
+    }
 
 
     public PenerimaAdapter() {
         deretPenerima = new ArrayList<>();
+    }
+
+    public void setOnEmptyListener(OnEmptyListener oe) {
+        onEmpty = oe;
     }
 
     public void taruhIp(InetAddress ip) {
