@@ -27,7 +27,8 @@ public class PenerimaViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(ctx, RuangTunggu.class);
+        Class<?> ke = infoServer.manual ? ServerManual.class : RuangTunggu.class;
+        Intent intent = new Intent(ctx, ke);
         intent.putExtra(ALAMAT_SERVER, infoServer.host);
         ctx.startActivity(intent);
     }

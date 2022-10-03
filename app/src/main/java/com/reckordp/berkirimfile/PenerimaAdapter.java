@@ -20,6 +20,7 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
     private InetAddress ipDiri = null;
     private OnEmptyListener onEmpty = null;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean addressManual = false;
     private final Thread pencariServer = new Thread(() -> {
         if (ipDiri == null) return;
         JukirServer jukir = null;
@@ -33,7 +34,12 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
             if (diri == i) continue;
             try {
                 jukir = new JukirServer(InetAddress.getByName(asal + i));
-                if (jukir.isServer()) deretPenerima.add(jukir);
+                if (addressManual) {
+                    jukir.manual = true;
+                    deretPenerima.add(jukir);
+                } else {
+                    if (jukir.isServer()) deretPenerima.add(jukir);
+                }
             } catch (ConnectException | SocketTimeoutException e) {
                 System.err.println("Tidak bisa tersambung " + jukir.host);
             } catch (IOException e) {
@@ -50,6 +56,11 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
             mainHandler.post(() -> onEmpty.onEmpty());
         }
     });
+
+    public void manual() {
+        addressManual = true;
+        pencariServer.start();
+    }
 
     public interface OnEmptyListener {
         void onEmpty();

@@ -10,6 +10,7 @@ import java.net.SocketTimeoutException;
 public class JukirServer {
     public InetAddress ipAddr;
     public String host;
+    public boolean manual = false;
 
     static class BukanServer extends ConnectException {
 

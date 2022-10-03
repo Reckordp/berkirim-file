@@ -13,13 +13,16 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
+    PenerimaAdapter adapter;
+    RecyclerView penerima;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView penerima = findViewById(R.id.daftar_penerima);
-        PenerimaAdapter adapter = new PenerimaAdapter();
+        penerima = findViewById(R.id.daftar_penerima);
+        adapter = new PenerimaAdapter();
         penerima.setAdapter(adapter);
         penerima.setLayoutManager(new LinearLayoutManager(this));
         penerima.setHasFixedSize(true);
@@ -44,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Info");
         builder.setMessage("Server tidak ditemukan");
         builder.setPositiveButton(android.R.string.ok, (d,w) -> {});
+        builder.setNeutralButton("manual", (d,w) -> {
+            adapter.manual();
+            penerima.postInvalidate();
+        });
         builder.show();
     }
 }
