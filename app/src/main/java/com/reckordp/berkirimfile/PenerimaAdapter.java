@@ -21,45 +21,47 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
     private OnEmptyListener onEmpty = null;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean addressManual = false;
-    private final Thread pencariServer = new Thread(() -> {
-        if (ipDiri == null) return;
-        JukirServer jukir = null;
-        String hostName = ipDiri.getHostName();
-        int pemisahId = hostName.lastIndexOf(".");
-        short ukuranId = (short)hostName.length();
-        String asal = hostName.substring(0, pemisahId + 1);
-        int diri = Integer.parseInt(hostName.substring(pemisahId + 1, ukuranId));
+    private final Runnable pencariServer = new Runnable() {
+        public void run() {
+            if (ipDiri == null) return;
+            JukirServer jukir = null;
+            String hostName = ipDiri.getHostName();
+            int pemisahId = hostName.lastIndexOf(".");
+            short ukuranId = (short) hostName.length();
+            String asal = hostName.substring(0, pemisahId + 1);
+            int diri = Integer.parseInt(hostName.substring(pemisahId + 1, ukuranId));
 
-        for (int i = 1; i < 255; i++) {
-            if (diri == i) continue;
-            try {
-                jukir = new JukirServer(InetAddress.getByName(asal + i));
-                if (addressManual) {
-                    jukir.manual = true;
-                    deretPenerima.add(jukir);
-                } else {
-                    if (jukir.isServer()) deretPenerima.add(jukir);
+            for (int i = 1; i < 255; i++) {
+                if (diri == i) continue;
+                try {
+                    jukir = new JukirServer(InetAddress.getByName(asal + i));
+                    if (addressManual) {
+                        jukir.manual = true;
+                        deretPenerima.add(jukir);
+                    } else {
+                        if (jukir.isServer()) deretPenerima.add(jukir);
+                    }
+                } catch (ConnectException | SocketTimeoutException e) {
+                    System.err.println("Tidak bisa tersambung " + jukir.host);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (ConnectException | SocketTimeoutException e) {
-                System.err.println("Tidak bisa tersambung " + jukir.host);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
 
-        if (!deretPenerima.isEmpty()) {
-            notifyItemChanged(0);
-            if (deretPenerima.size() > 1) {
-                notifyItemRangeInserted(1, deretPenerima.size() - 1);
+            if (!deretPenerima.isEmpty()) {
+                notifyItemChanged(0);
+                if (deretPenerima.size() > 1) {
+                    notifyItemRangeInserted(1, deretPenerima.size() - 1);
+                }
+            } else if (onEmpty != null) {
+                mainHandler.post(() -> onEmpty.onEmpty());
             }
-        } else if (onEmpty != null) {
-            mainHandler.post(() -> onEmpty.onEmpty());
         }
-    });
+    };
 
     public void manual() {
         addressManual = true;
-        pencariServer.start();
+        (new Thread(pencariServer)).start();
     }
 
     public interface OnEmptyListener {
@@ -77,7 +79,7 @@ public class PenerimaAdapter extends RecyclerView.Adapter<PenerimaViewHolder> {
 
     public void taruhIp(InetAddress ip) {
         ipDiri = ip;
-        pencariServer.start();
+        (new Thread(pencariServer)).start();
     }
 
     @NonNull

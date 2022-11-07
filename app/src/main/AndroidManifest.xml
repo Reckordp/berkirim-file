@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BerkirimFile">
         <activity
+            android:name=".ServerManual"
+            android:label="Uji Server" />
+        <activity
             android:name=".RuangTunggu"
             android:label="Mengirim File" />
         <activity

@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 public class ServerManual extends AppCompatActivity {
     private JukirServer server;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
-    private Thread testThread = new Thread(() -> {
+    private final Thread testThread = new Thread(() -> {
         boolean benar;
         try {
             benar = server.isServer();
@@ -40,16 +40,20 @@ public class ServerManual extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         String tujuan;
+        Thread memulaiJukir;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_manual);
 
         tujuan = getIntent().getStringExtra(PenerimaViewHolder.ALAMAT_SERVER);
-        try {
-            server = new JukirServer(InetAddress.getByName(tujuan));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        memulaiJukir = new Thread(() -> {
+            try {
+                server = new JukirServer(InetAddress.getByName(tujuan));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        });
+        memulaiJukir.start();
 
         ((TextView)findViewById(R.id.host)).setText(tujuan);
         findViewById(R.id.button_test).setOnClickListener(this::testTujuan);

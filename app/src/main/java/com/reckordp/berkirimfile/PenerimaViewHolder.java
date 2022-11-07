@@ -22,7 +22,9 @@ public class PenerimaViewHolder extends RecyclerView.ViewHolder implements View.
 
     public void taruhServer(JukirServer jukir) {
         infoServer = jukir;
-        ((TextView)itemView.findViewById(R.id.nama_inet)).setText(jukir.host);
+        TextView text = itemView.findViewById(R.id.nama_inet);
+        if (text == null) return;
+        text.setText(jukir.host);
     }
 
     @Override
