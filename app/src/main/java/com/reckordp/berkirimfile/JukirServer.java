@@ -33,7 +33,7 @@ public class JukirServer {
         try {
             if (ipAddr.isReachable(18)) {
                 koneksi = new Socket();
-                koneksi.connect(sockAddr, 24);
+                koneksi.connect(sockAddr, 20000);
                 server = new RuangTunggu.PenghantarServer(koneksi);
                 portNormal = server.ujiPort();
                 server.close();
